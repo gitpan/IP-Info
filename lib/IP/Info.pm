@@ -18,12 +18,12 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
-Readonly my $VER     => 'v1';
+our $VERSION = '0.02';
+Readonly my $API_VER => 'v1';
 Readonly my $METHOD  => 'ipinfo';
 Readonly my $SERVICE => 'http://api.quova.com';
 
@@ -196,7 +196,7 @@ sub _sig
 sub _url
 {
     my $self = shift;
-    return sprintf("%s/%s/%s", $SERVICE, $VER, $METHOD);
+    return sprintf("%s/%s/%s", $SERVICE, $API_VER, $METHOD);
 }
 
 =head1 AUTHOR

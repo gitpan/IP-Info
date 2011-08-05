@@ -1,4 +1,7 @@
 Revision history for IP-Info
 
+0.02    Fri Aug 05 10:15:16 2011
+        - Renamed global var $VER to $API_VER.
+
 0.01    Mon Aug 01 10:00:00 2011
         - First version, released.
