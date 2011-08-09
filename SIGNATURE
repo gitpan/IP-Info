@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.66.
+signed via the Module::Signature module, version 0.68.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -14,14 +14,14 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 2de28e40930bae426ad8b6a9536957a2b13f1396 Build.PL
-SHA1 be5463abd3059023b91085f9f91a0875eca6f75b Changes
+SHA1 5bf9e15cb38787d619e490541e06d482b7b6fdcc Build.PL
+SHA1 3520005e45d37b75d69f7157108504c27fecf733 Changes
 SHA1 5433a7b3c06e9cef4e3c72f9a82cea177cae548b MANIFEST
 SHA1 7d20e4e840781030202bb045d5ab81b3fd1b68b0 MANIFEST.SKIP
-SHA1 a1755526527f290405d2343a84e0e7e306bbcf6b META.yml
-SHA1 3c1f139122ab9f413f7f1e4dd35349144e22663d Makefile.PL
+SHA1 8e6a8b41d419a6695537dfd4e535e3e35f7ad051 META.yml
+SHA1 d1f417b4adfc3cdd0d45b96f524890432768b42b Makefile.PL
 SHA1 6d3434038ba8f244dec51ca318d436277df01f91 README
-SHA1 c65b587bcb1aa196d7f55b562235d14172926434 lib/IP/Info.pm
+SHA1 79746a10593afee5680eb54bb65d8a23563dd009 lib/IP/Info.pm
 SHA1 59043617bd5f137db72f6ee0cbbbd2daef77604f t/00-load.t
 SHA1 cd7f98f46fc4113cd6b666f6b450cae56e5d1b12 t/01-new.t
 SHA1 45cdb50ac7facf16b5f3def8bfe130b563d80bc0 t/02-ipaddress.t
@@ -30,11 +30,11 @@ SHA1 0765c9ff0cc4319f415bb08d0053b7717a8284a2 t/pod.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.14 (MingW32)
 
-iQEcBAEBAgAGBQJOO7U+AAoJEPYcXBXhRYOh0fwH/RDuSMMrob5gMBA4TtbigDDI
-XMyndVZZN3SpMi5htiUQqTtSTO4CRO3T3LSpB3yglBWKLfc7NDWYoSZMkw0t0Enz
-byvfZ9D37ar+MdgFRE28VQ/1gII3wcpMMNuCCxz+vUJROWdvBazmv6erk4zH4f1W
-DxICjPTWoIOYDTDAv0rAQYVYmijCDarwlCTYrMyjgoqoEfS1zju0R361qy8z3Zcu
-JPITrIfZX0TkMCeYWqyyyz+NVXSZyNlvdRdoqRgIIutgfbt7ydPFCzBzzYe8jUZI
-4PXUY5GsO2V0M2MVQEv2PHvj6aX+WDPzkk63EbJfval0oVm+EMChcUVTpv3YZdQ=
-=RG/Q
+iQEcBAEBAgAGBQJOQUXuAAoJEPYcXBXhRYOhBDcH/R9uhniQocGH8q4SPgZzR5i0
+IMPkxOVZhVF9dCIzs448APkNntGkOKG7YnL4u9yVQq+wmzqE5PnSV6XDL8yO4SAp
+Ke+8WRg4BCOu0vH9diqojeycDuvHwLKgnyKD/5fbxgfNmRVmMw0/NO9QQK4Ihtke
+sSs2BQiCcVSMdCUhHcrPJFpg0FzJiqnigpVYgxWNNYzHKlh8S4As1HH9PL/UfLUR
+rlm+sP8aeSW+uD8+JJHHibDSveAnBEfu9TdCCwGv2DpGAmRVJl9V88tZ25CMxDP/
+qHjYvVPwMrq7t2v51KQHzeUw01oG6wmipGkGw65qDgYBP+KnIKQ5Yrgzoo09pBk=
+=Xdzg
 -----END PGP SIGNATURE-----

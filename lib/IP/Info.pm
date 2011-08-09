@@ -18,11 +18,11 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 Readonly my $API_VER => 'v1';
 Readonly my $METHOD  => 'ipinfo';
 Readonly my $SERVICE => 'http://api.quova.com';

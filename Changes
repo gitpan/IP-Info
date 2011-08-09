@@ -1,5 +1,9 @@
 Revision history for IP-Info
 
+0.03    Tue Aug 09 15:34:11 2011
+        - Made Readonly v1.03 as minimum requirement.
+        - Prepared the distribution using the Module::Signature v0.68.
+
 0.02    Fri Aug 05 10:15:16 2011
         - Renamed global var $VER to $API_VER.
 

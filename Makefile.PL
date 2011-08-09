@@ -10,7 +10,7 @@ WriteMakefile(
     clean         => { FILES => 'IP-Info-*' },
     PREREQ_PM     => {
         'Test::More'  => 0,
-        'Readonly'    => 0,
+        'Readonly'    => '1.03',
         'Mouse'       => '0.93',
         'Digest::MD5' => '2.36',
         'HTTP::Request'  => '1.40',
