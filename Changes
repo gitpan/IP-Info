@@ -1,5 +1,8 @@
 Revision history for IP-Info
 
+0.04    Fri Sep 02 11:12:13 2011
+        - Added response handler as suggested by Neil Bowers.
+
 0.03    Tue Aug 09 15:34:11 2011
         - Made Readonly v1.03 as minimum requirement.
         - Prepared the distribution using the Module::Signature v0.68.

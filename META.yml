@@ -6,10 +6,12 @@ build_requires:
   Data::Validate::IP: 0.10
   Digest::MD5: 2.36
   HTTP::Request: 1.40
+  JSON: 2.15
   LWP::UserAgent: 2.33
   Mouse: 0.93
   Readonly: 1.03
   Test::More: 0
+  XML::Simple: 2.14
 configure_requires:
   Module::Build: 0.36
 generated_by: 'Module::Build version 0.3607'
@@ -21,7 +23,10 @@ name: IP-Info
 provides:
   IP::Info:
     file: lib/IP/Info.pm
-    version: 0.03
+    version: 0.04
+  IP::Info::Response:
+    file: lib/IP/Info/Response.pm
+    version: 0.04
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.03
+version: 0.04

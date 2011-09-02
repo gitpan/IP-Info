@@ -7,8 +7,11 @@ use Carp;
 use Readonly;
 use Data::Dumper;
 
+use JSON;
+use XML::Simple;
 use HTTP::Request;
 use LWP::UserAgent;
+use IP::Info::Response;
 use Digest::MD5 qw(md5_hex);
 use Data::Validate::IP qw(is_ipv4);
 
@@ -18,11 +21,11 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 Readonly my $API_VER => 'v1';
 Readonly my $METHOD  => 'ipinfo';
 Readonly my $SERVICE => 'http://api.quova.com';
@@ -56,7 +59,7 @@ The constructor requires the following parameters as listed below:
     | apikey |   Yes    | API Key given by Quova                |
     | secret |   Yes    | Allocated share secret given by Quova |
     | format |   No     | xml or json. Default is xml           |
-    +--------+----------+---------------------------------------+    
+    +--------+----------+---------------------------------------+
 
 To obtain your Quova API key (apikey) and the shared secret, register your application here at
 http://developer.quova.com/
@@ -112,8 +115,11 @@ around BUILDARGS => sub
 
 =head2 ipaddress()
 
-If an IP address is specified in the correct format, the call returns all available Quova data
-for that IP. The IP must be a standard, 32-bit IPv4 address. The allowed IP formats are
+If an IP address is specified in the correct format, then  the  call returns an object of type
+L<IP::Info::Response> object which can be queried further to look for specific information for 
+that IP.
+
+The IP must be a standard, 32-bit IPv4 address. The allowed IP formats are
 
 =over 2
 
@@ -130,7 +136,8 @@ for that IP. The IP must be a standard, 32-bit IPv4 address. The allowed IP form
     my $secret = 'Your_shared_secret';
     my $ipaddress = '4.2.2.2';
     my $info = IP::Info->new($apikey, $secret);
-    print $info->ipaddress($ipaddress);
+    my $response = $info->ipaddress($ipaddress);
+    print "Country: [".$response->country(). "]\n";
 
 =cut
 
@@ -143,7 +150,19 @@ sub ipaddress
     
     my $url = sprintf("%s/%s?apikey=%s&sig=%s&format=%s",
         $self->_url(), $ip, $self->apikey, $self->_sig(), $self->format);
-    return $self->_process($url);
+    my $source = $self->_process($url);
+    
+    if ($self->format =~ /xml/i)
+    {
+        $source =~ s/^(\<\?.*\?\>)//g;
+        $source = XMLin($source)
+    }
+    else
+    {
+        $source = from_json($source);
+        $source = $source->{'ipinfo'};
+    }
+    return IP::Info::Response->new(source => $source);
 }
 
 =head2 schema()
