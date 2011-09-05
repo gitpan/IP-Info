@@ -11,11 +11,11 @@ IP::Info::Response - Response handler for the module IP::Info.
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 DESCRIPTION
 

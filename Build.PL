@@ -10,7 +10,6 @@ my $builder = Module::Build->new(
     add_to_cleanup    => [ 'IP-Info-*' ],    
     build_requires    => {
         'Test::More'  => 0,
-        'JSON'        => '2.15',
         'XML::Simple' => '2.14',
         'Readonly'    => '1.03',
         'Mouse'       => '0.93',

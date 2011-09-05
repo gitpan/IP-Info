@@ -1,5 +1,11 @@
 Revision history for IP-Info
 
+0.05    Mon Sep 05 10:11:12 2011
+        - Removed the format attribute as its no longer relevant.
+        - Updated the signature of method schema() and logic as it nows saves the file as well.
+        - Updated unit test for the constructor 01-new.t.
+        - Added new unit for the method schema().
+
 0.04    Fri Sep 02 11:12:13 2011
         - Added response handler as suggested by Neil Bowers.
 

@@ -7,7 +7,6 @@ use Carp;
 use Readonly;
 use Data::Dumper;
 
-use JSON;
 use XML::Simple;
 use HTTP::Request;
 use LWP::UserAgent;
@@ -21,11 +20,11 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 Readonly my $API_VER => 'v1';
 Readonly my $METHOD  => 'ipinfo';
 Readonly my $SERVICE => 'http://api.quova.com';
@@ -53,13 +52,12 @@ address in the public address space. The information includes:
 
 The constructor requires the following parameters as listed below:
 
-    +--------+----------+---------------------------------------+
-    | Key    | Required | Description                           |
-    +--------+----------+---------------------------------------+
-    | apikey |   Yes    | API Key given by Quova                |
-    | secret |   Yes    | Allocated share secret given by Quova |
-    | format |   No     | xml or json. Default is xml           |
-    +--------+----------+---------------------------------------+
+    +--------+----------+----------------------------------------+
+    | Key    | Required | Description                            |
+    +--------+----------+----------------------------------------+
+    | apikey |   Yes    | API Key given by Quova.                |
+    | secret |   Yes    | Allocated share secret given by Quova. |
+    +--------+----------+----------------------------------------+
 
 To obtain your Quova API key (apikey) and the shared secret, register your application here at
 http://developer.quova.com/
@@ -67,25 +65,18 @@ http://developer.quova.com/
     use strict; use warnings;
     use IP::Info;
     
-    my ($apikey, $secret, $format, $info);
+    my ($apikey, $secret, $info);
     $apikey = 'Your_API_Key';
     $secret = 'Your_shared_secret';
-    $format = 'json';
-    
-    $info  = IP::Info->new($apikey, $secret);
+    $info   = IP::Info->new($apikey, $secret);
     # or
-    $info  = IP::Info->new($apikey, $secret, $format);
-    # or
-    $info  = IP::Info->new({ apikey => $apikey, secret => $secret});
-    # or
-    $info  = IP::Info->new({ apikey => $apikey, secret => $secret, format => $format});
+    $info   = IP::Info->new({ apikey => $apikey, secret => $secret});
 
 =cut
 
 type 'Format'  => where { defined($_) && (/\bxml\b|\bjson\b/i) };
 has  'apikey'  => (is => 'ro', isa => 'Str', required => 1);
 has  'secret'  => (is => 'ro', isa => 'Str', required => 1);
-has  'format'  => (is => 'ro', isa => 'Format', default => 'xml');
 has  'browser' => (is => 'ro', isa => 'LWP::UserAgent', default => sub { return LWP::UserAgent->new(agent => 'Mozilla/5.0'); });
 
 around BUILDARGS => sub
@@ -100,10 +91,6 @@ around BUILDARGS => sub
     elsif (@_ == 2 && ! ref $_[0])
     {
         return $class->$orig(apikey => $_[0], secret => $_[1]);
-    }
-    elsif (@_ == 3 && ! ref $_[0])
-    {
-        return $class->$orig(apikey => $_[0], secret => $_[1], format => $_[2]);
     }
     else
     {
@@ -148,43 +135,42 @@ sub ipaddress
     croak("ERROR: Missing parameter IP Address.\n") unless defined $ip;
     croak("ERROR: Invalid IP Address [$ip].\n") unless is_ipv4($ip);
     
-    my $url = sprintf("%s/%s?apikey=%s&sig=%s&format=%s",
-        $self->_url(), $ip, $self->apikey, $self->_sig(), $self->format);
+    my $url = sprintf("%s/%s?apikey=%s&sig=%s&format=xml",
+        $self->_url(), $ip, $self->apikey, $self->_sig());
     my $source = $self->_process($url);
-    
-    if ($self->format =~ /xml/i)
-    {
-        $source =~ s/^(\<\?.*\?\>)//g;
-        $source = XMLin($source)
-    }
-    else
-    {
-        $source = from_json($source);
-        $source = $source->{'ipinfo'};
-    }
-    return IP::Info::Response->new(source => $source);
+    $source =~ s/^(\<\?.*\?\>)//g;
+    return IP::Info::Response->new(source => XMLin($source));
 }
 
 =head2 schema()
 
-It returns the XML Schema Document (.xsd file).
+Saves the XML Schema Document in the given file (.xsd file).
 
     use strict; use warnings;
     use IP::Info;
     
     my $apikey = 'Your_API_Key';
     my $secret = 'Your_shared_secret';
-    my $info  = IP::Info->new($apikey, $secret);
-    print $info->schema();
+    my $info   = IP::Info->new($apikey, $secret);
+    $info->schema('User_supplied_filename.xsd');
 
 =cut
 
 sub schema
 {
     my $self = shift;
-    my $url  = sprintf("%s/schema?apikey=%s&sig=%s&format=%s",
-        $self->_url(), $self->apikey, $self->_sig(), $self->format);
-    return $self->_process($url);
+    my $file = shift;
+    croak("ERROR: Please supply the file name for the schema document.\n")
+        unless defined $file;
+
+    my $url  = sprintf("%s/schema?apikey=%s&sig=%s",
+        $self->_url(), $self->apikey, $self->_sig());
+    my $data = $self->_process($url);
+
+    open(SCHEMA, ">$file") 
+        or croak("ERROR: Couldn't open file [$file] for writing: [$!]\n");
+    print SCHEMA $data;
+    close(SCHEMA);
 }
 
 sub _process
