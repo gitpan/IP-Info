@@ -14,8 +14,10 @@ WriteMakefile(
         'Readonly'    => '1.03',
         'Mouse'       => '0.93',
         'Digest::MD5' => '2.36',
-        'HTTP::Request'  => '1.40',
-        'LWP::UserAgent' => '2.33',
+        'HTTP::Request'      => '1.40',
+        'HTTP::Exception'    => '0.04004',
+        'Exception::Class'   => '1.36',
+        'LWP::UserAgent'     => '2.33',
         'Data::Validate::IP' => '0.10',
     },
     ($ExtUtils::MakeMaker::VERSION >= 6.3002

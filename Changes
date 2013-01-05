@@ -1,5 +1,9 @@
 Revision history for IP-Info
 
+0.06    Sat Jan 05 01:02:03 2013
+        - Patch for RT# 82365 requested by Andrei.
+        - Added unit test for exception handler.
+
 0.05    Mon Sep 05 10:11:12 2011
         - Removed the format attribute as its no longer relevant.
         - Updated the signature of method schema() and logic as it nows saves the file as well.

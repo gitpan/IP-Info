@@ -7,11 +7,15 @@ Makefile.PL
 README
 lib/IP/Info.pm
 lib/IP/Info/Response.pm
+lib/IP/Info/Exception.pm
 t/00-load.t
 t/01-new.t
 t/02-ipaddress.t
 t/03-schema.t
+t/04-exception-handler.t
 t/manifest.t
 t/pod.t
 META.yml
+SIGNATURE    Added here by Module::Build
+META.json
 SIGNATURE    Added here by Module::Build

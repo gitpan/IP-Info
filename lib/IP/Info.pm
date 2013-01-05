@@ -9,8 +9,12 @@ use Data::Dumper;
 
 use XML::Simple;
 use HTTP::Request;
+use HTTP::Exception;
 use LWP::UserAgent;
+
 use IP::Info::Response;
+use IP::Info::Exception;
+
 use Digest::MD5 qw(md5_hex);
 use Data::Validate::IP qw(is_ipv4);
 
@@ -20,11 +24,11 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 Readonly my $API_VER => 'v1';
 Readonly my $METHOD  => 'ipinfo';
 Readonly my $SERVICE => 'http://api.quova.com';
@@ -64,7 +68,7 @@ http://developer.quova.com/
 
     use strict; use warnings;
     use IP::Info;
-    
+
     my ($apikey, $secret, $info);
     $apikey = 'Your_API_Key';
     $secret = 'Your_shared_secret';
@@ -103,8 +107,9 @@ around BUILDARGS => sub
 =head2 ipaddress()
 
 If an IP address is specified in the correct format, then  the  call returns an object of type
-L<IP::Info::Response> object which can be queried further to look for specific information for 
-that IP.
+L<IP::Info::Response> object which can be queried further to look for specific information for
+that IP.In case it encounters any error it will throw an exception of type L<HTTP::Exception>.
+Also throw NoDataFoundException in case no data found for the given IP address.
 
 The IP must be a standard, 32-bit IPv4 address. The allowed IP formats are
 
@@ -112,19 +117,26 @@ The IP must be a standard, 32-bit IPv4 address. The allowed IP formats are
 
 =item * dot-decimal e.g. 4.2.2.2
 
-=item * decimal notation e.g. 67240450 
+=item * decimal notation e.g. 67240450
 
 =back
 
     use strict; use warnings;
     use IP::Info;
-    
+
     my $apikey = 'Your_API_Key';
     my $secret = 'Your_shared_secret';
     my $ipaddress = '4.2.2.2';
     my $info = IP::Info->new($apikey, $secret);
-    my $response = $info->ipaddress($ipaddress);
-    print "Country: [".$response->country(). "]\n";
+    eval {
+        my $response = $info->ipaddress($ipaddress);
+        print "Country: [".$response->country(). "]\n";
+    };
+    my $e = HTTP::Exception->caught;
+    print "Error code: [".$e->code."]\n" if defined $e;
+
+    $e = Exception::Class->caught('NoDataFoundException');
+    print "NoDataFoundException caught.\n" if defined $e;
 
 =cut
 
@@ -134,25 +146,34 @@ sub ipaddress
     my $ip   = shift;
     croak("ERROR: Missing parameter IP Address.\n") unless defined $ip;
     croak("ERROR: Invalid IP Address [$ip].\n") unless is_ipv4($ip);
-    
-    my $url = sprintf("%s/%s?apikey=%s&sig=%s&format=xml",
+
+    my ($url, $source);
+    $url = sprintf("%s/%s?apikey=%s&sig=%s&format=xml",
         $self->_url(), $ip, $self->apikey, $self->_sig());
-    my $source = $self->_process($url);
+    $source = $self->_process($url);
     $source =~ s/^(\<\?.*\?\>)//g;
     return IP::Info::Response->new(source => XMLin($source));
 }
 
 =head2 schema()
 
-Saves the XML Schema Document in the given file (.xsd file).
+Saves the XML Schema Document  in  the given file (.xsd file). In case it encounters any error
+it will throw an exception of type L<HTTP::Exception>. Also throw NoDataFoundException in case
+no data found.
 
     use strict; use warnings;
     use IP::Info;
-    
+
     my $apikey = 'Your_API_Key';
     my $secret = 'Your_shared_secret';
     my $info   = IP::Info->new($apikey, $secret);
-    $info->schema('User_supplied_filename.xsd');
+    eval { $info->schema('User_supplied_filename.xsd') };
+
+    my $e = HTTP::Exception->caught;
+    print "Error code: [".$e->code."]\n" if defined $e;
+
+    $e = Exception::Class->caught('NoDataFoundException');
+    print "NoDataFoundException caught.\n" if defined $e;
 
 =cut
 
@@ -167,7 +188,7 @@ sub schema
         $self->_url(), $self->apikey, $self->_sig());
     my $data = $self->_process($url);
 
-    open(SCHEMA, ">$file") 
+    open(SCHEMA, ">$file")
         or croak("ERROR: Couldn't open file [$file] for writing: [$!]\n");
     print SCHEMA $data;
     close(SCHEMA);
@@ -177,17 +198,20 @@ sub _process
 {
     my $self = shift;
     my $url  = shift;
-    
+
     my ($browser, $request, $response, $content);
     $browser = $self->browser;
     $browser->timeout(120);
     $browser->env_proxy;
     $request  = HTTP::Request->new(GET => $url);
     $response = $browser->request($request);
-    croak("ERROR: Couldn't fetch data [$url]:[".$response->status_line."]\n")
+    HTTP::Exception->throw($response->code)
         unless $response->is_success;
+
     $content  = $response->content;
-    croak("ERROR: No data found.\n") unless defined $content;
+    NoDataFoundException->throw(url => $url)
+        unless (defined $content && length($content)>0);
+
     return $content;
 }
 

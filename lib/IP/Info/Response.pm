@@ -11,15 +11,15 @@ IP::Info::Response - Response handler for the module IP::Info.
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 =head1 DESCRIPTION
 
-Response handler for IP::Info and exposes the response data to user.
+Response handler for the module IP::Info and exposes the response data to user.
 
 =cut
 
@@ -56,12 +56,12 @@ sub BUILD
     my $self = shift;
 
     my $source = $self->source;
-    
-    $self->{'http_status'} = $source->{'http_status'} 
+
+    $self->{'http_status'} = $source->{'http_status'}
         if defined($source->{'http_status'});
-    $self->{'message'} = $source->{'message'} 
+    $self->{'message'} = $source->{'message'}
         if defined($source->{'message'});
-        
+
     # Network Data
     $self->{'ip_type'} = $source->{ip_type}
         if defined($source->{ip_type});
@@ -83,7 +83,7 @@ sub BUILD
         if defined($source->{Network}->{Domain}->{tld});
     $self->{'domain_sld'} = $source->{Network}->{Domain}->{sld}
         if defined($source->{Network}->{Domain}->{sld});
-        
+
     # Location Data
     $self->{'longitude'} = $source->{Location}->{longitude}
         if defined($source->{Location}->{longitude});
