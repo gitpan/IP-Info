@@ -1,10 +1,10 @@
-package IP::Info::Response;
+package IP::Info::UserAgent;
 
-$IP::Info::Response::VERSION = '0.07';
+$IP::Info::UserAgent::VERSION = '0.07';
 
 =head1 NAME
 
-IP::Info::Response - Response handler for the module IP::Info.
+IP::Info::UserAgent - User agent for IP::Info.
 
 =head1 VERSION
 
@@ -12,39 +12,53 @@ Version 0.07
 
 =cut
 
+use 5.006;
 use Data::Dumper;
+
+use HTTP::Tiny;
+use IP::Info::UserAgent::Exception;
 
 use Moo;
 use namespace::clean;
 
+has 'api_key' => ( is => 'ro', required => 1 );
+has 'secret'  => ( is => 'ro', required => 1 );
+has 'ua'      => ( is => 'rw', default => sub { HTTP::Tiny->new(agent => "IP-Info/v1"); } );
+
 =head1 DESCRIPTION
 
-Response handler for the module IP::Info and exposes the response data to user.
-
-=cut
-
-has 'ip_address' => (is => 'rw', required => 1);
-has 'ip_type'    => (is => 'rw', required => 1);
-has 'network'    => (is => 'rw', required => 1);
-has 'location'   => (is => 'rw', required => 1);
+The helper library for L<IP::Info> module.
 
 =head1 METHODS
 
-=head2 ip_type()
+=head2 get(<url>)
 
-Returns the IP Type.
+The method get() expects one parameter i.e. URL and returns the standard response.
+On error throws exception of type L<IP::Info::UserAgent::Exception>.
 
-=head2 ip_address()
+=cut
 
-Returns the IP address.
+sub get {
+    my ($self, $url) = @_;
 
-=head2 network()
+    my $ua = $self->ua;
+    my $response = $ua->request('GET', $url);
 
-Returns the object of type L<IP::Info::Response::Network>.
+    my @caller = caller(1);
+    @caller = caller(2) if $caller[3] eq '(eval)';
 
-=head2 location()
+    unless ($response->{success}) {
+	IP::Info::UserAgent::Exception->throw({
+            method      => $caller[3],
+            message     => "request to API failed",
+            code        => $response->{status},
+            reason      => $response->{reason},
+            filename    => $caller[1],
+            line_number => $caller[2] });
+    }
 
-Returns the object of type L<IP::Info::Response::Location>.
+    return $response;
+}
 
 =head1 AUTHOR
 
@@ -65,7 +79,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc IP::Info::Response
+    perldoc IP::Info
 
 You can also look for information at:
 
@@ -129,4 +143,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of IP::Info::Response
+1; # End of IP::Info::UserAgent

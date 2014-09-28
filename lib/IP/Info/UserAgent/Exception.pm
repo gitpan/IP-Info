@@ -1,10 +1,10 @@
-package IP::Info::Response;
+package IP::Info::UserAgent::Exception;
 
-$IP::Info::Response::VERSION = '0.07';
+$IP::Info::UserAgent::Exception::VERSION = '0.07';
 
 =head1 NAME
 
-IP::Info::Response - Response handler for the module IP::Info.
+IP::Info::UserAgent::Exception - Exception handler for the module L<IP::Info::UserAgent>.
 
 =head1 VERSION
 
@@ -12,43 +12,33 @@ Version 0.07
 
 =cut
 
-use Data::Dumper;
-
+use 5.006;
 use Moo;
 use namespace::clean;
+with 'Throwable';
 
-=head1 DESCRIPTION
+use overload q{""} => 'as_string', fallback => 1;
 
-Response handler for the module IP::Info and exposes the response data to user.
+has method      => (is => 'ro');
+has message     => (is => 'ro');
+has code        => (is => 'ro');
+has reason      => (is => 'ro');
+has filename    => (is => 'ro');
+has line_number => (is => 'ro');
 
-=cut
+sub as_string {
+    my ($self) = @_;
 
-has 'ip_address' => (is => 'rw', required => 1);
-has 'ip_type'    => (is => 'rw', required => 1);
-has 'network'    => (is => 'rw', required => 1);
-has 'location'   => (is => 'rw', required => 1);
-
-=head1 METHODS
-
-=head2 ip_type()
-
-Returns the IP Type.
-
-=head2 ip_address()
-
-Returns the IP address.
-
-=head2 network()
-
-Returns the object of type L<IP::Info::Response::Network>.
-
-=head2 location()
-
-Returns the object of type L<IP::Info::Response::Location>.
+    return sprintf("%s(): %s (status: %s) file %s on line %d\n",
+                   $self->method, $self->message, $self->code,
+                   $self->filename, $self->line_number);
+}
 
 =head1 AUTHOR
 
 Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
+
+=head1 BUGS
 
 =head1 REPOSITORY
 
@@ -65,7 +55,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc IP::Info::Response
+    perldoc IP::Info::UserAgent::Exception
 
 You can also look for information at:
 
@@ -129,4 +119,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of IP::Info::Response
+1; # End of IP::Info::UserAgent::Exception

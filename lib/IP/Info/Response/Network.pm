@@ -1,10 +1,10 @@
-package IP::Info::Response;
+package IP::Info::Response::Network;
 
-$IP::Info::Response::VERSION = '0.07';
+$IP::Info::Response::Network::VERSION = '0.07';
 
 =head1 NAME
 
-IP::Info::Response - Response handler for the module IP::Info.
+IP::Info::Response::Network - Placeholder for Network for the module L<IP::Info::Response>.
 
 =head1 VERSION
 
@@ -17,34 +17,55 @@ use Data::Dumper;
 use Moo;
 use namespace::clean;
 
-=head1 DESCRIPTION
+has 'ip_routing_type' => (is => 'ro');
+has 'carrier'         => (is => 'ro');
+has 'line_speed'      => (is => 'ro');
+has 'asn'             => (is => 'ro');
+has 'organization'    => (is => 'ro');
+has 'domain_tld'      => (is => 'ro');
+has 'domain_sld'      => (is => 'ro');
+has 'connection_type' => (is => 'ro');
 
-Response handler for the module IP::Info and exposes the response data to user.
+sub BUILD {
+    my ($self, $param) = @_;
 
-=cut
-
-has 'ip_address' => (is => 'rw', required => 1);
-has 'ip_type'    => (is => 'rw', required => 1);
-has 'network'    => (is => 'rw', required => 1);
-has 'location'   => (is => 'rw', required => 1);
+    $self->{domain_tld} = $param->{Domain}->{tld};
+    $self->{domain_sld} = $param->{Domain}->{sld};
+}
 
 =head1 METHODS
 
-=head2 ip_type()
+=head2 ip_routing_type()
 
-Returns the IP Type.
+Returns the IP Routing Type.
 
-=head2 ip_address()
+=head2 carrier()
 
-Returns the IP address.
+Returns the IP Carrier.
 
-=head2 network()
+=head2 line_speed()
 
-Returns the object of type L<IP::Info::Response::Network>.
+Returns the IP Line Speed.
 
-=head2 location()
+=head2 asn()
 
-Returns the object of type L<IP::Info::Response::Location>.
+Returns the IP ASN.
+
+=head2 organization()
+
+Returns the IP Organization.
+
+=head2 connection_type()
+
+Returns the IP Connection Type.
+
+=head2 domain_tld()
+
+Returns the IP Domain TLD.
+
+=head2 domain_sld()
+
+Returns the IP Domain SLD.
 
 =head1 AUTHOR
 
@@ -65,7 +86,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc IP::Info::Response
+    perldoc IP::Info::Response::Network
 
 You can also look for information at:
 
@@ -129,4 +150,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of IP::Info::Response
+1; # End of IP::Info::Response::Network

@@ -1,22 +1,6 @@
 package IP::Info;
 
-use Mouse;
-use Mouse::Util::TypeConstraints;
-
-use Carp;
-use Readonly;
-use Data::Dumper;
-
-use XML::Simple;
-use HTTP::Request;
-use HTTP::Exception;
-use LWP::UserAgent;
-
-use IP::Info::Response;
-use IP::Info::Exception;
-
-use Digest::MD5 qw(md5_hex);
-use Data::Validate::IP qw(is_ipv4);
+$IP::Infor::VERSION = '0.07';
 
 =head1 NAME
 
@@ -24,19 +8,35 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
-our $VERSION = '0.06';
-Readonly my $API_VER => 'v1';
-Readonly my $METHOD  => 'ipinfo';
-Readonly my $SERVICE => 'http://api.quova.com';
+use JSON;
+use Data::Dumper;
+
+use IP::Info::Response;
+use IP::Info::Response::Network;
+use IP::Info::Response::Location;
+use IP::Info::UserAgent;
+use IP::Info::UserAgent::Exception;
+
+use Digest::MD5 qw(md5_hex);
+use Data::Validate::IP qw(is_ipv4);
+
+use Moo;
+use namespace::clean;
+extends 'IP::Info::UserAgent';
+
+has 'base_url' => (is => 'ro', default => sub { return 'http://api.quova.com/v1/ipinfo'; });
 
 =head1 DESCRIPTION
 
-Quova RESTful API provides the geographic location and network data for any  Internet Protocol
-address in the public address space. The information includes:
+Quova RESTful API provides the geographic location & network data for any Internet
+Protocol address in the public address space. The information includes:
+
+To obtain your Quova API key and the shared secret, register your application here
+at L<http://developer.quova.com/>.
 
 =over 5
 
@@ -48,7 +48,8 @@ address in the public address space. The information includes:
 
 =item * DMA (Designated Market Area) and MSA (Metropolitan Statistical Area)
 
-=item * Network information, including type, speed, carrier, and registering organization
+=item * Network information, including type, speed, carrier, and registering
+        organization
 
 =back
 
@@ -56,62 +57,28 @@ address in the public address space. The information includes:
 
 The constructor requires the following parameters as listed below:
 
-    +--------+----------+----------------------------------------+
-    | Key    | Required | Description                            |
-    +--------+----------+----------------------------------------+
-    | apikey |   Yes    | API Key given by Quova.                |
-    | secret |   Yes    | Allocated share secret given by Quova. |
-    +--------+----------+----------------------------------------+
-
-To obtain your Quova API key (apikey) and the shared secret, register your application here at
-http://developer.quova.com/
+    +---------+----------+----------------------------------------+
+    | Key     | Required | Description                            |
+    +---------+----------+----------------------------------------+
+    | api_key |   Yes    | API Key given by Quova.                |
+    | secret  |   Yes    | Allocated share secret given by Quova. |
+    +---------+----------+----------------------------------------+
 
     use strict; use warnings;
     use IP::Info;
 
-    my ($apikey, $secret, $info);
-    $apikey = 'Your_API_Key';
-    $secret = 'Your_shared_secret';
-    $info   = IP::Info->new($apikey, $secret);
-    # or
-    $info   = IP::Info->new({ apikey => $apikey, secret => $secret});
-
-=cut
-
-type 'Format'  => where { defined($_) && (/\bxml\b|\bjson\b/i) };
-has  'apikey'  => (is => 'ro', isa => 'Str', required => 1);
-has  'secret'  => (is => 'ro', isa => 'Str', required => 1);
-has  'browser' => (is => 'ro', isa => 'LWP::UserAgent', default => sub { return LWP::UserAgent->new(agent => 'Mozilla/5.0'); });
-
-around BUILDARGS => sub
-{
-    my $orig  = shift;
-    my $class = shift;
-
-    if (@_ == 1 && ! ref $_[0])
-    {
-        return $class->$orig(apikey => $_[0]);
-    }
-    elsif (@_ == 2 && ! ref $_[0])
-    {
-        return $class->$orig(apikey => $_[0], secret => $_[1]);
-    }
-    else
-    {
-        return $class->$orig(@_);
-    }
-};
+    my $api_key = 'Your_API_Key';
+    my $secret  = 'Your_shared_secret';
+    my $info    = IP::Info->new({ api_key => $api_key, secret => $secret });
 
 =head1 METHODS
 
-=head2 ipaddress()
+=head2 ip_address()
 
-If an IP address is specified in the correct format, then  the  call returns an object of type
-L<IP::Info::Response> object which can be queried further to look for specific information for
-that IP.In case it encounters any error it will throw an exception of type L<HTTP::Exception>.
-Also throw NoDataFoundException in case no data found for the given IP address.
-
-The IP must be a standard, 32-bit IPv4 address. The allowed IP formats are
+If  an  IP  address  is specified in the correct format, then the call returns an
+object of type L<IP::Info::Response> object which can be queried further to  look
+for specific information for that IP. In case it encounters any error it'll throw
+an exception.
 
 =over 2
 
@@ -124,119 +91,85 @@ The IP must be a standard, 32-bit IPv4 address. The allowed IP formats are
     use strict; use warnings;
     use IP::Info;
 
-    my $apikey = 'Your_API_Key';
-    my $secret = 'Your_shared_secret';
-    my $ipaddress = '4.2.2.2';
-    my $info = IP::Info->new($apikey, $secret);
-    eval {
-        my $response = $info->ipaddress($ipaddress);
-        print "Country: [".$response->country(). "]\n";
-    };
-    my $e = HTTP::Exception->caught;
-    print "Error code: [".$e->code."]\n" if defined $e;
+    my $api_key  = 'Your_API_Key';
+    my $secret   = 'Your_shared_secret';
+    my $info     = IP::Info->new({ api_key => $api_key, secret => $secret });
+    my $response = $info->ip_address('4.2.2.2');
+    my $location = $response->location;
+    my $network  = $response->network;
 
-    $e = Exception::Class->caught('NoDataFoundException');
-    print "NoDataFoundException caught.\n" if defined $e;
+    print "Carrier: ", $network->carrier , "\n";
+    print "Country: ", $location->country, "\n";
 
 =cut
 
-sub ipaddress
-{
-    my $self = shift;
-    my $ip   = shift;
-    croak("ERROR: Missing parameter IP Address.\n") unless defined $ip;
-    croak("ERROR: Invalid IP Address [$ip].\n") unless is_ipv4($ip);
+sub ip_address {
+    my ($self, $ip) = @_;
 
-    my ($url, $source);
-    $url = sprintf("%s/%s?apikey=%s&sig=%s&format=xml",
-        $self->_url(), $ip, $self->apikey, $self->_sig());
-    $source = $self->_process($url);
-    $source =~ s/^(\<\?.*\?\>)//g;
-    return IP::Info::Response->new(source => XMLin($source));
+    die ("ERROR: Missing parameter IP Address.") unless defined $ip;
+    die ("ERROR: Invalid IP Address [$ip].")     unless is_ipv4($ip);
+
+    my $url      = sprintf("%s/%s?apikey=%s&sig=%s&format=json", $self->base_url(), $ip, $self->api_key, $self->_sig());
+    my $response = $self->get($url);
+    my $content  = from_json($response->{content});
+
+    return IP::Info::Response->new({
+        ip_address => $content->{ipinfo}->{ip_address},
+        ip_type    => $content->{ipinfo}->{ip_type},
+        network    => IP::Info::Response::Network->new($content->{ipinfo}->{Network}),
+        location   => IP::Info::Response::Location->new($content->{ipinfo}->{Location})
+    });
 }
 
 =head2 schema()
 
-Saves the XML Schema Document  in  the given file (.xsd file). In case it encounters any error
-it will throw an exception of type L<HTTP::Exception>. Also throw NoDataFoundException in case
-no data found.
+Saves the XML Schema Document in the given file (.xsd file).In case it encounters
+any error it will throw an exception.
 
     use strict; use warnings;
     use IP::Info;
 
-    my $apikey = 'Your_API_Key';
-    my $secret = 'Your_shared_secret';
-    my $info   = IP::Info->new($apikey, $secret);
-    eval { $info->schema('User_supplied_filename.xsd') };
-
-    my $e = HTTP::Exception->caught;
-    print "Error code: [".$e->code."]\n" if defined $e;
-
-    $e = Exception::Class->caught('NoDataFoundException');
-    print "NoDataFoundException caught.\n" if defined $e;
+    my $api_key = 'Your_API_Key';
+    my $secret  = 'Your_shared_secret';
+    my $info    = IP::Info->new({ api_key => $api_key, secret => $secret });
+    $info->schema('User_supplied_filename.xsd');
 
 =cut
 
-sub schema
-{
-    my $self = shift;
-    my $file = shift;
-    croak("ERROR: Please supply the file name for the schema document.\n")
-        unless defined $file;
+sub schema {
+    my ($self, $file) = @_;
 
-    my $url  = sprintf("%s/schema?apikey=%s&sig=%s",
-        $self->_url(), $self->apikey, $self->_sig());
-    my $data = $self->_process($url);
+    die ("ERROR: Please supply the file name for the schema document.") unless defined $file;
 
-    open(SCHEMA, ">$file")
-        or croak("ERROR: Couldn't open file [$file] for writing: [$!]\n");
-    print SCHEMA $data;
+    my $url      = sprintf("%s/schema?apikey=%s&sig=%s", $self->base_url(), $self->api_key, $self->_sig());
+    my $response = $self->get($url);
+
+    open(SCHEMA, ">$file") or die ("ERROR: Couldn't open file [$file] for writing: [$!]");
+    print SCHEMA $response->{content};
     close(SCHEMA);
 }
 
-sub _process
-{
-    my $self = shift;
-    my $url  = shift;
+sub _sig {
+    my ($self) = @_;
 
-    my ($browser, $request, $response, $content);
-    $browser = $self->browser;
-    $browser->timeout(120);
-    $browser->env_proxy;
-    $request  = HTTP::Request->new(GET => $url);
-    $response = $browser->request($request);
-    HTTP::Exception->throw($response->code)
-        unless $response->is_success;
-
-    $content  = $response->content;
-    NoDataFoundException->throw(url => $url)
-        unless (defined $content && length($content)>0);
-
-    return $content;
-}
-
-sub _sig
-{
-    my $self = shift;
     my $time = time;
-    return md5_hex($self->apikey . $self->secret . $time);
-}
-
-sub _url
-{
-    my $self = shift;
-    return sprintf("%s/%s/%s", $SERVICE, $API_VER, $METHOD);
+    return md5_hex($self->api_key . $self->secret . $time);
 }
 
 =head1 AUTHOR
 
 Mohammad S Anwar, C<< <mohammad.anwar at yahoo.com> >>
 
+=head1 REPOSITORY
+
+L<https://github.com/Manwar/IP-Info>
+
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-ip-info at rt.cpan.org> or through the web
-interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=IP-Info>. I will be notified and
-then you'll automatically be notified of progress on your bug as I make changes.
+Please  report  any  bugs or feature requests to C<bug-ip-info at rt.cpan.org> or
+through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=IP-Info>.
+I will be notified and then you'll automatically be notified of  progress on your
+bug as I make changes.
 
 =head1 SUPPORT
 
@@ -268,21 +201,42 @@ L<http://search.cpan.org/dist/IP-Info/>
 
 =head1 LICENSE AND COPYRIGHT
 
-This  program  is  free  software; you can redistribute it and/or modify it under the terms of
-either:  the  GNU  General Public License as published by the Free Software Foundation; or the
-Artistic License.
+Copyright (C) 2011 - 2014 Mohammad S Anwar.
 
-See http://dev.perl.org/licenses/ for more information.
+This  program  is  free software; you can redistribute it and/or modify it under
+the  terms  of the the Artistic License (2.0). You may obtain a copy of the full
+license at:
 
-=head1 DISCLAIMER
+L<http://www.perlfoundation.org/artistic_license_2_0>
 
-This  program  is  distributed in the hope that it will be useful,  but  WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Any  use,  modification, and distribution of the Standard or Modified Versions is
+governed by this Artistic License.By using, modifying or distributing the Package,
+you accept this license. Do not use, modify, or distribute the Package, if you do
+not accept this license.
+
+If your Modified Version has been derived from a Modified Version made by someone
+other than you,you are nevertheless required to ensure that your Modified Version
+ complies with the requirements of this license.
+
+This  license  does  not grant you the right to use any trademark,  service mark,
+tradename, or logo of the Copyright Holder.
+
+This license includes the non-exclusive, worldwide, free-of-charge patent license
+to make,  have made, use,  offer to sell, sell, import and otherwise transfer the
+Package with respect to any patent claims licensable by the Copyright Holder that
+are  necessarily  infringed  by  the  Package. If you institute patent litigation
+(including  a  cross-claim  or  counterclaim) against any party alleging that the
+Package constitutes direct or contributory patent infringement,then this Artistic
+License to you shall terminate on the date that such litigation is filed.
+
+Disclaimer  of  Warranty:  THE  PACKAGE  IS  PROVIDED BY THE COPYRIGHT HOLDER AND
+CONTRIBUTORS  "AS IS'  AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES. THE IMPLIED
+WARRANTIES    OF   MERCHANTABILITY,   FITNESS   FOR   A   PARTICULAR  PURPOSE, OR
+NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY YOUR LOCAL LAW. UNLESS
+REQUIRED BY LAW, NO COPYRIGHT HOLDER OR CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL,  OR CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE
+OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
-
-__PACKAGE__->meta->make_immutable;
-no Mouse; # Keywords are removed from the IP::Info package
-no Mouse::Util::TypeConstraints;
 
 1; # End of IP::Info

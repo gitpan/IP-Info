@@ -1,10 +1,10 @@
-package IP::Info::Response;
+package IP::Info::Response::Location;
 
-$IP::Info::Response::VERSION = '0.07';
+$IP::Info::Response::Location::VERSION = '0.07';
 
 =head1 NAME
 
-IP::Info::Response - Response handler for the module IP::Info.
+IP::Info::Response::Location - Placeholder for Location for the module L<IP::Info::Response>.
 
 =head1 VERSION
 
@@ -17,34 +17,103 @@ use Data::Dumper;
 use Moo;
 use namespace::clean;
 
-=head1 DESCRIPTION
+has 'country_code'=> (is => 'ro');
+has 'country_cf'  => (is => 'ro');
+has 'country'     => (is => 'ro');
+has 'city_cf'     => (is => 'ro');
+has 'city'        => (is => 'ro');
+has 'postal_code' => (is => 'ro');
+has 'time_zone'   => (is => 'ro');
+has 'area_code'   => (is => 'ro');
+has 'state_code'  => (is => 'ro');
+has 'state_cf'    => (is => 'ro');
+has 'state'       => (is => 'ro');
+has 'continent'   => (is => 'ro');
+has 'longitude'   => (is => 'ro');
+has 'latitude'    => (is => 'ro');
+has 'region'      => (is => 'ro');
+has 'msa'         => (is => 'ro');
+has 'dma'         => (is => 'ro');
 
-Response handler for the module IP::Info and exposes the response data to user.
+sub BUILD {
+    my ($self, $param) = @_;
 
-=cut
+    $self->{country}      = $param->{CountryData}->{country};
+    $self->{country_cf}   = $param->{CountryData}->{country_cf};
+    $self->{country_code} = $param->{CountryData}->{country_code};
 
-has 'ip_address' => (is => 'rw', required => 1);
-has 'ip_type'    => (is => 'rw', required => 1);
-has 'network'    => (is => 'rw', required => 1);
-has 'location'   => (is => 'rw', required => 1);
+    $self->{state}        = $param->{StateData}->{state};
+    $self->{state_cf}     = $param->{StateData}->{state_cf};
+    $self->{state_code}   = $param->{StateData}->{state_code};
+
+    $self->{city}         = $param->{CityData}->{city};
+    $self->{city_cf}      = $param->{CityData}->{city_cf};
+    $self->{postal_code}  = $param->{CityData}->{postal_code};
+    $self->{area_code}    = $param->{CityData}->{area_code};
+    $self->{time_zone}    = $param->{CityData}->{time_zone};
+}
 
 =head1 METHODS
 
-=head2 ip_type()
+=head2 longitute()
 
-Returns the IP Type.
+Returns the IP Location Longitude.
 
-=head2 ip_address()
+=head2 latitude()
 
-Returns the IP address.
+Returns the IP Location Latitude.
 
-=head2 network()
+=head2 city_cf()
 
-Returns the object of type L<IP::Info::Response::Network>.
+Returns the IP Location City CF.
 
-=head2 location()
+=head2 city()
 
-Returns the object of type L<IP::Info::Response::Location>.
+Returns the IP Location City.
+
+=head2 postal_code()
+
+Returns the IP Location Postal Code.
+
+=head2 time_zone()
+
+Returns the IP Location Time Zone.
+
+=head2 area_code()
+
+Returns the IP Location Area Code.
+
+=head2 region()
+
+Returns the IP Location Region.
+
+=head2 continent()
+
+Returns the IP Location Continent.
+
+=head2 state_code()
+
+Returns the IP Location State Code.
+
+=head2 state_cf()
+
+Returns the IP Location State CF.
+
+=head2 state()
+
+Returns the IP Location State.
+
+=head2 country_code()
+
+Returns the IP Location Country Code.
+
+=head2 country_cf()
+
+Returns the IP Location Country CF.
+
+=head2 country()
+
+Returns the IP Location Country.
 
 =head1 AUTHOR
 
@@ -65,7 +134,7 @@ bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc IP::Info::Response
+    perldoc IP::Info::Response::Location
 
 You can also look for information at:
 
@@ -129,4 +198,4 @@ OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of IP::Info::Response
+1; # End of IP::Info::Response::Location
