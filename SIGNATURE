@@ -14,31 +14,32 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 948f03dfdceae83b558cb87a80fb52dbfba4e920 Changes
-SHA1 d380ca1e42aea3910534f1182e2e62f876bbb335 MANIFEST
+SHA1 6ecf787bbda0c7df5f7325326b1438c0e3eec03b Changes
+SHA1 7de89fc1675e89dec625bf5ee00c064d61937c1b MANIFEST
 SHA1 5f29cdcbfacb9c46ac155fff9844aceeb064aef1 MANIFEST.SKIP
 SHA1 2a445c4eafd90d5202f9d60193d7ecb4a76d700f Makefile.PL
 SHA1 eb1b53da3d39c94f8dd605b37bb96c1ffb02096e README
-SHA1 3dfbe56b42dcc685ed833487c51babbdb3cce6e4 lib/IP/Info.pm
-SHA1 06e61b9beffb1b8101830719246d0f0bb6deb4ac lib/IP/Info/Response.pm
-SHA1 14fbc5215c059b978c147ed1baccf824e1bae47f lib/IP/Info/Response/Location.pm
-SHA1 2bce8acd4bed98b12821bafd6c9a59f3e1447dca lib/IP/Info/Response/Network.pm
-SHA1 36054f84db3cb976022d54495d4872e7de77ef1e lib/IP/Info/UserAgent.pm
-SHA1 49342a9799cd66a9ab03dddbaf79b28824fba92e lib/IP/Info/UserAgent/Exception.pm
+SHA1 c3692e7aaeabd3d18b15b9dc5cc357edf396eb29 lib/IP/Info.pm
+SHA1 42f1dd4719c59d434e1ce9c5f3463c3f3ce6e012 lib/IP/Info/Response.pm
+SHA1 fbbe04557dc214e37007187a3f0fb61809bc44b7 lib/IP/Info/Response/Location.pm
+SHA1 24dcdd8555de09a354a7af7120b785d9d4291e6e lib/IP/Info/Response/Network.pm
+SHA1 4832db63a250a83a7381408b99417323bf31e63b lib/IP/Info/UserAgent.pm
+SHA1 cde19750329281193222b1bbf1047fa01afbe0e3 lib/IP/Info/UserAgent/Exception.pm
 SHA1 0dc4a4e901fbf282658494586fb725a56500008c t/00-load.t
 SHA1 edde8d9f808efe186da129e9d6b4fb7081c1134d t/01-new.t
 SHA1 58c93e2188af186cc05975853dab63cb376c2fe7 t/02-ip_address.t
 SHA1 1979e711d27dba845ec45978a7cb30a856a09faa t/03-schema.t
+SHA1 ae93e66a5aa12e206b761202e938bede2e0d82ae t/changes.t
 SHA1 2b8ffb7e4f399af95d092743846ac8d438f2c53e t/manifest.t
 SHA1 0765c9ff0cc4319f415bb08d0053b7717a8284a2 t/pod.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQEcBAEBAgAGBQJUJ0+zAAoJENoXJXWo7C/pdJoH/1Btt2H4LAAY8JpMFrcT7d7H
-CpzS1EizuNngGBZB4JCjPfyiQzNtA1IvFqDfAauduW+chHalVbt0ZAAD0a6MgeLP
-pYHeLcBo7IEsyiCxe9bG3NxrtHHn6YiwtuZNx+1aYus4VqHeXNIRpibSXsTr/Rfo
-w+TuMbSeAByI8+3e+ekJak7nkUj15dK/DspkvlQHOtRsH1teX699enjU5Xv0q64O
-GYQKmjTiaNUBazQJ+3kiWimbaifRyP/SBHkYMCaRcEWDSIL71ARtfj3XJYitdmtd
-OAMPwbVlcLOKAqdkSzRaa9CX11YyIgD121YbhEDhgBJoW60bvhB+X3sTqDqhO2g=
-=i6GD
+iQEcBAEBAgAGBQJUVBAvAAoJENoXJXWo7C/pNlAIAL36deoow3u/sdCAG0I7jijf
+yasBapKT508Jtz0R+mRWMNrKbWyEIp/v1zhnQrWq6qjEYKl1vjqMPHxV6tB75ali
+76NFaz5WCYwoIETFm+RWiInV2TnQEe4bITbJqCJZN5kAelQOl2xVKqDenw272Y9i
+EdluPA30sxIq2pypnvbZUdNS6OobdFWg1jfS2084ExOXABaAvZxTaZrPoH23awUm
+KSFek1U41e6hxtf/IelkQDWhzZcxM7FXnQChnouoLNbVcrCJm85k7JIUkazMT29e
+qT/h06SxCwNheGi6aw3D+P6tq2lsuC+GpJImnE7FxUJXR7uIUtJxkhoYyWrIqaE=
+=pJXA
 -----END PGP SIGNATURE-----

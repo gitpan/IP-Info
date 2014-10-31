@@ -1,6 +1,6 @@
 package IP::Info;
 
-$IP::Infor::VERSION = '0.07';
+$IP::Infor::VERSION = '0.08';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 

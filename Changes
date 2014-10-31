@@ -1,6 +1,10 @@
 Revision history for IP-Info
 
-0.07  Sun Sep 28 00:48:35 2014
+0.08  2014-10-31T22:35:00+01:00
+      - Updated Changes file according to CPAN::Changes::Spec package.
+      - Added unit test changes.t file.
+
+0.07  2014-09-28T00:48:35+01:00
       - Re-structured the code using 'Moo'.
       - Added two placeholder for result i.e. IP::Info::Response::Network and IP::Info::Response::Location.
       - Removed the dependency on Readonly and XML::Simple. It now uses JSON.
@@ -8,25 +12,25 @@ Revision history for IP-Info
       - Added section "REPOSITORY" to the pod document.
       - Added key "META_MERGE" to Makefile.PL
 
-0.06  Sat Jan 05 01:02:03 2013
+0.06  2013-01-05T01:02:03+01:00
       - Patch for RT# 82365 requested by Andrei.
       - Added unit test for exception handler.
 
-0.05  Mon Sep 05 10:11:12 2011
+0.05  2011-09-05T10:11:12+01:00
       - Removed the format attribute as its no longer relevant.
       - Updated the signature of method schema() and logic as it nows saves the file as well.
       - Updated unit test for the constructor 01-new.t.
       - Added new unit for the method schema().
 
-0.04  Fri Sep 02 11:12:13 2011
+0.04  2011-09-02T11:12:13+01:00
       - Added response handler as suggested by Neil Bowers.
 
-0.03  Tue Aug 09 15:34:11 2011
+0.03  2011-08-09T15:34:11+01:00
       - Made Readonly v1.03 as minimum requirement.
       - Prepared the distribution using the Module::Signature v0.68.
 
-0.02  Fri Aug 05 10:15:16 2011
+0.02  2011-08-05T10:15:16+01:00
       - Renamed global var $VER to $API_VER.
 
-0.01  Mon Aug 01 10:00:00 2011
+0.01  2011-08-01T10:00:00+01:00
       - First version, released.
