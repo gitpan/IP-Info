@@ -1,6 +1,6 @@
 package IP::Info::Response::Network;
 
-$IP::Info::Response::Network::VERSION = '0.08';
+$IP::Info::Response::Network::VERSION = '0.09';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ IP::Info::Response::Network - Placeholder for Network for the module L<IP::Info:
 
 =head1 VERSION
 
-Version 0.08
+Version 0.09
 
 =cut
 

@@ -1,6 +1,6 @@
 package IP::Info::Response::Location;
 
-$IP::Info::Response::Location::VERSION = '0.08';
+$IP::Info::Response::Location::VERSION = '0.09';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ IP::Info::Response::Location - Placeholder for Location for the module L<IP::Inf
 
 =head1 VERSION
 
-Version 0.08
+Version 0.09
 
 =cut
 

@@ -1,6 +1,6 @@
 package IP::Info;
 
-$IP::Infor::VERSION = '0.08';
+$IP::Infor::VERSION = '0.09';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.08
+Version 0.09
 
 =cut
 
@@ -35,8 +35,7 @@ has 'base_url' => (is => 'ro', default => sub { return 'http://api.quova.com/v1/
 Quova RESTful API provides the geographic location & network data for any Internet
 Protocol address in the public address space. The information includes:
 
-To obtain your Quova API key and the shared secret, register your application here
-at L<http://developer.quova.com/>.
+To obtain your Quova API key and the shared secret, register your application L<here|http://developer.quova.com>.
 
 =over 5
 

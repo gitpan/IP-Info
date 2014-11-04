@@ -28,4 +28,4 @@ requires:
   perl: '5.006'
 resources:
   repository: https://github.com/Manwar/IP-Info.git
-version: '0.08'
+version: '0.09'

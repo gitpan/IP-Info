@@ -1,5 +1,8 @@
 Revision history for IP-Info
 
+0.09  2014-11-04T21:24:11+01:00
+      - Tidied up the pod document.
+
 0.08  2014-10-31T22:35:00+01:00
       - Updated Changes file according to CPAN::Changes::Spec package.
       - Added unit test changes.t file.
