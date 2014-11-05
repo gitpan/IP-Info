@@ -1,6 +1,6 @@
 package IP::Info;
 
-$IP::Infor::VERSION = '0.09';
+$IP::Infor::VERSION = '0.10';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.09
+Version 0.10
 
 =cut
 
@@ -35,8 +35,6 @@ has 'base_url' => (is => 'ro', default => sub { return 'http://api.quova.com/v1/
 Quova RESTful API provides the geographic location & network data for any Internet
 Protocol address in the public address space. The information includes:
 
-To obtain your Quova API key and the shared secret, register your application L<here|http://developer.quova.com>.
-
 =over 5
 
 =item * Postal code, city, state, region, country, and continent
@@ -49,6 +47,8 @@ To obtain your Quova API key and the shared secret, register your application L<
 
 =item * Network information, including type, speed, carrier, and registering
         organization
+
+To obtain your Quova API key and the shared secret, register your application L<here|http://developer.quova.com>.
 
 =back
 
@@ -94,11 +94,9 @@ an exception.
     my $secret   = 'Your_shared_secret';
     my $info     = IP::Info->new({ api_key => $api_key, secret => $secret });
     my $response = $info->ip_address('4.2.2.2');
-    my $location = $response->location;
-    my $network  = $response->network;
 
-    print "Carrier: ", $network->carrier , "\n";
-    print "Country: ", $location->country, "\n";
+    print "Carrier: ", $response->network->carrier , "\n";
+    print "Country: ", $response->location->country, "\n";
 
 =cut
 

@@ -1,6 +1,6 @@
 package IP::Info::Response;
 
-$IP::Info::Response::VERSION = '0.09';
+$IP::Info::Response::VERSION = '0.10';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ IP::Info::Response - Response handler for the module IP::Info.
 
 =head1 VERSION
 
-Version 0.09
+Version 0.10
 
 =cut
 
