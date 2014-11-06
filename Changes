@@ -1,5 +1,9 @@
 Revision history for IP-Info
 
+0.11  2014-11-06T23:15:20+01:00
+      - Corrected the syntax of pod document of package IP::Info.
+      - Added method parameter to the pod document.
+
 0.10  2014-11-05T19:17:10+01:00
       - Some more tidied up the pod document.
 

@@ -1,6 +1,6 @@
 package IP::Info;
 
-$IP::Infor::VERSION = '0.10';
+$IP::Infor::VERSION = '0.11';
 
 =head1 NAME
 
@@ -8,7 +8,7 @@ IP::Info - Interface to IP geographic and network data.
 
 =head1 VERSION
 
-Version 0.10
+Version 0.11
 
 =cut
 
@@ -48,9 +48,9 @@ Protocol address in the public address space. The information includes:
 =item * Network information, including type, speed, carrier, and registering
         organization
 
-To obtain your Quova API key and the shared secret, register your application L<here|http://developer.quova.com>.
-
 =back
+
+To obtain your Quova API key and the shared secret, register your application L<here|http://developer.quova.com>.
 
 =head1 CONSTRUCTOR
 
@@ -72,7 +72,7 @@ The constructor requires the following parameters as listed below:
 
 =head1 METHODS
 
-=head2 ip_address()
+=head2 ip_address($ip_address)
 
 If  an  IP  address  is specified in the correct format, then the call returns an
 object of type L<IP::Info::Response> object which can be queried further to  look
@@ -118,7 +118,7 @@ sub ip_address {
     });
 }
 
-=head2 schema()
+=head2 schema($file_name)
 
 Saves the XML Schema Document in the given file (.xsd file).In case it encounters
 any error it will throw an exception.
